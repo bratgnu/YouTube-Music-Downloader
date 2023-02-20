@@ -8,11 +8,11 @@ link = input("Enter the link of YouTube video you want to download: ")
 yt = YouTube(link)
 
 # showing details
+print("Downloading...")
 print("Title: ", yt.title)
 print("Length of video: ", yt.length, " seconds")
 
 # Extract audio with 160kbps quality from video
-print("Downloading...")
 video = yt.streams.filter(abr='160kbps').last()
 
 # Downloadthe file
