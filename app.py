@@ -1,4 +1,6 @@
 from pytube import YouTube
+import os
+from pathlib import Path
 from helpfile import DOWNLOAD_FOLDER
 
 # ask for the link from user
@@ -7,17 +9,15 @@ yt = YouTube(link)
 
 # showing details
 print("Title: ", yt.title)
-print("Number of views: ", yt.views)
-print("Length of video: ", yt.length)
-print("Rating of video: ", yt.rating)
+print("Length of video: ", yt.length, " seconds")
 
-# get the highest resolution possible
-ys = yt.streams.get_highest_resolution()
-
-# ask for the output folder from user
-output_folder = DOWNLOAD_FOLDER
-
-# starting download
+# Extract audio with 160kbps quality from video
 print("Downloading...")
-ys.download(output_path=output_folder)
+video = yt.streams.filter(abr='160kbps').last()
+
+# Downloadthe file
+out_file = video.download(output_path=DOWNLOAD_FOLDER)
+base, ext = os.path.splitext(out_file)
+new_file = Path(f'{base}.mp3')
+os.rename(out_file, new_file)
 print("Download completed!!")
