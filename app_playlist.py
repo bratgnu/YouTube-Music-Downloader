@@ -1,12 +1,12 @@
-from pytube import YouTube, Playlist
+# importing packages
+from pytube import Playlist, YouTube
+import os
+from pathlib import Path
 from helpfile import DOWNLOAD_FOLDER
 
 # ask for the link from user
 link = input("Enter the link of YouTube playlist you want to download: ")
 playlist = Playlist(link)
-
-# ask for the output folder
-output_folder = DOWNLOAD_FOLDER
 
 # showing details of playlist
 print("Number of videos in playlist: ", len(playlist.video_urls))
@@ -15,19 +15,22 @@ print("Number of videos in playlist: ", len(playlist.video_urls))
 for video_url in playlist.video_urls:
     try:
         yt = YouTube(video_url)
-        print("Title: ", yt.title)
-        print("Number of views: ", yt.views)
-        print("Length of video: ", yt.length)
-        print("Rating of video: ", yt.rating)
-        # get the highest resolution possible
-        ys = yt.streams.get_highest_resolution()
 
-        # starting download
-        print("Downloading...")
-        ys.download(output_path=output_folder)
-        print("Download completed!!")
+        # showing details
+        print("Downloading: ", yt.title)
+
+        # Extract audio with 160kbps quality from video
+        video = yt.streams.filter(abr='160kbps').last()
+
+        # Download the file
+        out_file = video.download(output_path=DOWNLOAD_FOLDER)
+        base, ext = os.path.splitext(out_file)
+        new_file = Path(f'{base}.mp3')
+        os.rename(out_file, new_file)
     except:
         print("Error downloading video: ", video_url)
 
 print("All videos in playlist have been downloaded successfully!")
+
+
 
